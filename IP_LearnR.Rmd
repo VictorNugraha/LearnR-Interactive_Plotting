@@ -141,7 +141,7 @@ head(ikea)
 Seperti yang kita sudah ketahui kita bisa menggunakan cara base seperti chunk di atas untuk menambahkan sebuah kolom baru, mari sekarang kita coba menambahkan kolom baru yang berisikan informasi harga barang dalam mata uang Indonesia dengan menggunakan cara dplyr.
 
 ```{r letter, echo=FALSE}
-question("Coba pilih salah satu kode dplyr dibawah ini yang dapat digunakan untuk membuat kolom baru yang berisikan informasi harga barang dalam mata uang Indonesia", type = "single",
+question("Coba pilih salah satu kode dplyr dibawah ini yang dapat digunakan untuk membuat kolom baru yang berisikan informasi harga barang dalam mata uang Indonesia.", type = "single",
 correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
 random_answer_order = FALSE,
 answer("ikea <- ikea %>% mutate(price = price * 3817.76)"),
@@ -162,7 +162,7 @@ glimpse(ikea)
 Selain menggunakan fungsi lapply untuk mengubah tipe data pada beberapa kolom secara bersamaan, kita juga bisa memanfaatkan salah satu fungsi dari `library(dplyr)`. Sekarang mari kita coba untuk mengubah beberapa kolom secara bersamaan tanpa menggunakan cara base.
 
 ```{r letter2, echo=FALSE}
-question("Coba pilih salah satu kode dplyr dibawah ini yang dapat digunakan untuk mengubah beberapa kolom secara bersamaan", type = "single",
+question("Coba pilih salah satu kode dplyr dibawah ini yang dapat digunakan untuk mengubah beberapa kolom secara bersamaan.", type = "single",
 correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
 random_answer_order = FALSE,
 answer("ikea <- ikea %>% mutate_if(is.character, as.factor)", correct = TRUE),
@@ -172,19 +172,44 @@ answer("ikea <- ikea %>% mutate(category = as.factor(category))"))
 
 ### 2.3 Aggregasi Data
 
-Teknik lain yang sering digunakan pada data wrangling yaitu aggregasi data, pada proses ini kita menghitung beberapa nilai berdasarkan pengelompokan tertentu.
+Teknik lain yang sering digunakan pada data wrangling yaitu aggregasi data, pada proses ini kita bisa melakukan perhitungan untuk beberapa nilai berdasarkan pengelompokan tertentu.
+
+<b>Latihan Aggregasi Data 1:</b>
+
+Dalam latihan aggregasi data ini, kita akan mencoba untuk menghitung rata rata harga untuk setiap category.
+
+```{r}
+# Cara base
+aggregate(x = ikea$price,
+          by = list(ikea$category),
+          FUN = mean)
+```
+
+Jika dengan cara base kita bisa menggunakan fungsi `aggregate()` untuk melakukan aggregasi, sekarang mari kita coba untuk melakukan aggregasi data dengan menggunakan cara dplyr.
+
+```{r abcdefghijk, exercise = TRUE, exercise.eval = TRUE}
+# Cara dplyr
+
+```
+
+Setelah kita melakukan aggregasi, hasil aggregasinya masih belum terurut secara rapi dari nilai yang paling tertinggi ke nilai terendah ataupun sebaliknya. 
+
+```{r letter3, echo=FALSE}
+question("Coba pilih salah satu fungsi dplyr dibawah ini yang dapat membantu kita untuk mengurutkan hasil aggregasi data yang sudah dilakukan.", type = "single",
+correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
+random_answer_order = FALSE,
+answer("slice()"),
+answer("desc()"),
+answer("arrange()", correct = TRUE))
+```
+
+## Bab 3: Visualisasi Interaktif
 
 
 
 
 
-
-
-
-
-
-
-
+## Bab 4: Dashboard
 
 
 
