@@ -1,0 +1,201 @@
+---
+title: "Interactive Plotting"
+author : "Team Algoritma"
+date : "1/24/2022"
+output: 
+  learnr::tutorial:
+  fig.show : 'asis'
+runtime: shiny_prerendered
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+# learnr
+library(learnr)
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 99)
+Sys.setlocale('LC_ALL','C')
+
+# Data Wrangling
+library(dplyr)
+library(tidyr)
+library(lubridate)
+
+# Visualisasi
+library(ggplot2)
+library(plotly)
+
+library(googlesheets)
+```
+
+## Bab 1: Pendahuluan
+
+Halo <i>future Data Scientist</i>! Jika pada <i>course</i> minggu lalu kita sudah mempelajari bagaimana membuat sebuah visualiasi statis dengan menggunakan bantuan `library(ggplot2)`, pada <i>course</i> minggu ini kita akan mempelajari bagaimana mengtransformasi visualisasi yang statis menjadi sebuah visualisasi yang interaktif.   
+
+Apa itu visualisasi yang interaktif? Visualisasi interaktif merupakan sebuah visualisasi yang memungkinkan penggunanya untuk melakukan interaksi terhadap visualisasi dan visualisasinya akan memberikan hasil atau respon sesuai dengan interaksi yang diberikan, salah satu contoh interaksi sederhana yang bisa kita lakukan adalah mengarahkan kursor ke salah satu bagian plot dan pada bagian plot tersebut akan mengeluarkan sebuah informasi. Harapannya dengan adanya visualisasi yang interaktif, kita bisa menyampaikan data yang kompleks dan berukuran besar dengan metode yang lebih menarik terhadap lawan bicara.
+
+Pada <i>course</i> kita tidak hanya mempelajari bagaimana membuat sebuah visualisasi interaktif, melainkan kita akan memulai <i>course</i> dengan mendalami bagaimana mempersiapkan data kita dengan bantuan sebuah <i>library</i> dan dibagian akhir kita akan mencoba untuk berkenalan sekaligus mendalami bagaimana kita bisa menyajikan visualisasi interaktif ke sebuah <i>dashboard</i>
+
+## Bab 2: Persiapan Data
+
+Sebelum melakukan sebuah visualisasi, salah satu tahapan yang tidak boleh terlewat adalah tahapan persiapan data. Seperti yang disampaikan sebelumnya, tahapan persiapan data kita kali ini akan memanfaatkan beberapa fungsi dari sebuah library yang bernama `dplyr`. Fungsi-fungsi dari `library(dplyr)` juga sudah didokumentasikan oleh R ke dalam sebuah <i>cheatsheet</i> yang bisa diakses melalui link berikut ini [RStudio Cheatsheet](https://www.rstudio.com/resources/cheatsheets/).
+
+Data yang akan kita coba persiapkan untuk kita buat visualisasinya adalah data mengenai barang-barang IKEA Swedia, yang sudah disimpan kedalam sebuah objek yang bernama `ikea`
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+ikea <- read.csv("data_input/ikea.csv")
+
+ikea <- ikea %>% 
+  select(-X, -link, -short_description, -name, -old_price) %>% 
+  na.omit() %>% 
+  separate_rows(designer, sep = "/") %>% 
+  filter(designer %in% c("IKEA of Sweden", "Karl Malmvall", "J Karlsson", "N Karlsson", "Francis Cayouette", "Ola Wihlborg", "Marcus Arvonen", "Nike Karlsson", "K Hagberg", "M Hagberg", "Jonas Hultqvist", "Ebba Strandmark", "Carina Bengs", "L Hilland	", "Fredriksson","David Wahl", "John", "Jonas", "Caroline", "Paul", "Petrus", "Hilland", "Chris Martin" ))
+```
+
+```{r echo=FALSE}
+ikea
+```
+
+Keterangan:
+
+* `item_id`: Item ID dari setiap furniture
+* `category`: Kategori dari furniture (sofa, bed, chairs, trolley, dll) 
+* `price`: Harga dari website per tanggal 20 April 2020
+* `sellable_online`: Apakah barang tersebut juga dijual di online? (True/False)
+* `other_colors`: Apakah barang tersebut memiliki warna lain dari warna barang yang dipajang? (Yes/No)
+* `designer`: Nama designer yang membuat barang tersebut
+* `width`: Lebar barang dalam centimeter
+* `height`: Tinggi dalam centimeter
+* `depth`: Panjang dalam centimeter
+
+### 2.1 Subset Data
+
+Subset data merupakan salah satu teknik dalam persiapan data yang paling sering dilakukan, pada proses subset data kita akan mengambil sebagian data berdasarkan kebutuhan atau kondisi tertentu. Untuk lebih memahami bagaimana melakukan subset data dengan menggunakan fungsi dari `library(dplyr)` dan melihat perbedaannya dengan cara base, mari kita coba latihan dengan menggunakan objek `ikea`!
+
+<b>Latihan Subset Data 1:</b> 
+
+Dari data ikea ambil kolom `designer`, `category`, dan `price`.
+
+```{r}
+# Cara base
+ikea[ , c("designer","category","price")]
+```
+
+Jika kita menggunakan cara base, kita bisa melakukan subset data dengan menggunakan cara di atas. Sekarang mari kita coba untuk melakukan subset data dengan menggunakan cara dplyr.
+
+```{r abcdefghijklmn, exercise = TRUE, exercise.eval = TRUE}
+# Cara dplyr
+
+```
+
+<b>Latihan Subset Data 2:</b> 
+
+Dari data ikea ambil data yang memiliki category `Tables & desks` dan `Bar furniture`.
+
+```{r}
+# Cara base
+ikea[ikea$category %in% c("Tables & desks", "Bar furniture"),  ]
+```
+
+Dalam melakukan subset data dengan kondisi tertenu kita bisa memanfaatkan cara base di atas. Sekarang mari kita coba untuk melakukan subset dengan kondisi tertentu dengan menggunakan cara dplyr. 
+
+```{r abcdefghijklm, exercise = TRUE, exercise.eval = TRUE}
+# Cara dplyr
+
+```
+
+<b>Latihan Subset Data 3:</b> 
+
+Mari kita coba gabungkan subseting data dengan menggabungkan kedua proses sebelumnya menjadi satu proses.
+
+```{r}
+# Cara base
+ikea[ikea$category %in% c("Tables & desks", "Bar furniture"), c("designer","category","price")]
+```
+
+Jika dengan menggunakan cara base kita bisa menggabungkan kedua proses subset data sebelumnya kedalam satu proses, sekarang mari kita coba dengan menggunakan cara dplyr.
+
+```{r abcdefghijkl, exercise = TRUE, exercise.eval = TRUE}
+# Cara dplyr
+
+```
+
+### 2.2 Feature Engineering
+
+<i>Feature engineering</i> merupakan sebuah teknik persiapan data, dimana kita bisa membuat sebuah kolom baru ataupun menghilangkan sebuah kolom berdasarkan kebutuhan bisnis. Selain membuat atau menghilangkan kolom, pada bagian <i>feature engineering</i> ini, kita juga bisa melakukan transformasi atau modifikasi pada data yang sudah ada. 
+
+<b>Latihan Feature Engineering 1:</b> 
+
+Pada kolom `price` harga untuk setiap barangnya masih dalam mata uang Saudi Riyal, agar kita mengetahui berapa harga barang tersebut dalam mata uang Indonesia, mari kita coba tambahkan sebuah kolom baru yang berisikan informasi harga barang tersebut dalam mata uang Indonesia (1 Saudi Riyal = Rp 3817,76).
+
+```{r}
+# Cara base
+ikea$price_in_rp <- ikea$price * 3817.76
+head(ikea)
+```
+
+Seperti yang kita sudah ketahui kita bisa menggunakan cara base seperti chunk di atas untuk menambahkan sebuah kolom baru, mari sekarang kita coba menambahkan kolom baru yang berisikan informasi harga barang dalam mata uang Indonesia dengan menggunakan cara dplyr.
+
+```{r letter, echo=FALSE}
+question("Coba pilih salah satu kode dplyr dibawah ini yang dapat digunakan untuk membuat kolom baru yang berisikan informasi harga barang dalam mata uang Indonesia", type = "single",
+correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
+random_answer_order = FALSE,
+answer("ikea <- ikea %>% mutate(price = price * 3817.76)"),
+answer("ikea <- ikea %>% mutate(price_in_rp = price * 3817.76)", correct = TRUE),
+answer("ikea <- ikea %>% select(price_in_rp = price * 3817.76)"))
+```
+
+<b>Latihan Feature Engineering 2:</b> 
+
+Pada tahapan ini kita juga bisa melakukan transformasi atau modifikasi pada data yang sudah ada. Transformasi atau modifikasi yang paling sederhana yang bisa kita lakukan adalah mengubah tipe data pada kolom-kolom yang belum memiliki tipe data yang sesuai.
+
+```{r}
+# Cara base
+ikea[ , c("category", "sellable_online", "other_colors", "designer")] <- lapply(ikea[ , c("category", "sellable_online", "other_colors", "designer")], as.factor)
+glimpse(ikea)
+```
+
+Selain menggunakan fungsi lapply untuk mengubah tipe data pada beberapa kolom secara bersamaan, kita juga bisa memanfaatkan salah satu fungsi dari `library(dplyr)`. Sekarang mari kita coba untuk mengubah beberapa kolom secara bersamaan tanpa menggunakan cara base.
+
+```{r letter2, echo=FALSE}
+question("Coba pilih salah satu kode dplyr dibawah ini yang dapat digunakan untuk mengubah beberapa kolom secara bersamaan", type = "single",
+correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
+random_answer_order = FALSE,
+answer("ikea <- ikea %>% mutate_if(is.character, as.factor)", correct = TRUE),
+answer("ikea <- ikea %>% transmute(is.character, as.factor)"),
+answer("ikea <- ikea %>% mutate(category = as.factor(category))"))
+```
+
+### 2.3 Aggregasi Data
+
+Teknik lain yang sering digunakan pada data wrangling yaitu aggregasi data, pada proses ini kita menghitung beberapa nilai berdasarkan pengelompokan tertentu.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
