@@ -19,15 +19,18 @@ library(learnr)
 knitr::opts_chunk$set(echo = TRUE)
 options(scipen = 99)
 Sys.setlocale('LC_ALL','C')
+library(sortable)
+library(parsons)
 
 # Data Wrangling
-library(dplyr)
-library(tidyr)
+library(tidyverse)
 library(lubridate)
 
 # Visualisasi
 library(ggplot2)
 library(plotly)
+library(glue)
+library(scales)
 
 library(googlesheets)
 ```
@@ -199,23 +202,350 @@ question("Coba pilih salah satu fungsi dplyr dibawah ini yang dapat membantu kit
 correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
 random_answer_order = FALSE,
 answer("slice()"),
-answer("desc()"),
+answer("pull()"),
 answer("arrange()", correct = TRUE))
 ```
 
 ## Bab 3: Visualisasi Interaktif
 
+Pada bagian ini kita akan mencoba untuk mendalami bagaimana mengtransformasi visualisasi yang statis menjadi sebuah visualisasi yang interaktif. Dalam proses transformasi tersebut kita akan dibantu dengan dua library yaitu `library(plotly)` dan `library(glue)`. 
+
+* `Library(plotly)`: Library `plotly` adalah API dari R untuk visualisasi interaktif milik `plotly.js`. Sebagai pengguna R, kita **dimudahkan** oleh satu fitur penting `plotly` untuk membuat plotting interaktif dari objek ggplot yaitu fungsi `ggplotly()`.
+* `Library(glue)`: Library `glue` memiliki sebuah fungsi yang memungkinkan kita untuk menampilkan sebuah informasi yang kita inginkan ketika meletakan cursor ke tiap bar/poin/element lain pada visualisasi.
+
+Dengan bantuan kedua library tersebut nantinya kita akan mencoba untuk membuat visualisasi yang interaktif dari objek `ikea_clean`.
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+ikea_clean <- ikea %>% 
+  mutate_if(is.character, as.factor) %>% 
+  mutate(price_in_rp = price * 3817.76)
+```
+
+```{r}
+ikea_clean
+```
+
+<b>Latihan Visualisasi Interaktif 1:</b>
+
+Untuk mendalami visualisasi interaktif cobalah untuk mereplikasi visualisasi interaktif dibawah ini. Pada visualisasi dibawah ini ingin menampilkan top 10 designer yang paling banyak membuat produk di IKEA.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+df <-
+  ikea_clean %>%
+  select(designer) %>%
+  separate_rows(designer, sep = "/") %>%
+  group_by(designer) %>%
+  summarise(freq = n()) %>%
+  arrange(-freq) %>%
+  head(10)
+
+# buat plot
+plot <- ggplot(data  = df, aes(
+  x = freq,
+  y = reorder(designer, freq),
+  text = glue("Total items: {freq}")
+)) +
+  geom_col(fill = "dodgerblue3") +
+  labs(title = "Top 10 Designer Based On Total Products",
+       x = "Frequency",
+       y = "Designer") +
+  scale_y_discrete(
+    labels = function(x)
+      str_wrap(x, width = 10)
+  ) +
+  theme_minimal()
+
+# ggplotly
+ggplotly(plot, tooltip = "text")
+```
+
+Untuk mempermudah proses replikasi visualisasi di atas, mari kita coba urutkan terlebih dahulu fungsi-fungsi yang sudah disediakan di bawah ini.
+
+* <b>Aggregasi Data</b>
+
+```{r parsons, echo=FALSE}
+question_parsons(
+  initial = c(
+    "labs(...)",
+    "tail(...)",
+    "head(...)",
+    "aggregate(...)",
+    "ikea_clean",
+    "select(...)",
+    "group_by(...)",
+    "desc(...)",
+    "arrange(...)",
+    "summarise(...)"
+  ),
+  pass_if(
+    c(
+      "ikea_clean",
+      "select(...)",
+      "group_by(...)",
+      "summarise(...)",
+      "arrange(...)",
+      "head(...)"
+    )
+  ),
+  
+  fail_if(
+    ~length(.) < 6,
+    message = "Include six answers"
+  ),
+  
+  fail_if(
+    function(x){"labs(...)" %in% x},
+    message = "You should not include labs(...) in your answer"
+  ),
+  
+    fail_if(
+    function(x){"tail(...)" %in% x},
+    message = "You should not include tail(...) in your answer"
+  ),
+  
+    fail_if(
+    function(x){"desc(...)" %in% x},
+    message = "You should not include desc(...) in your answer"
+  ),
+  
+  fail_if(
+    function(x){"aggregate(...)" %in% x},
+    message = "You should not include aggregate(...) in your answer"
+  )
+)
+```
+
+* <b>Visualisasi</b> 
+
+```{r parsons2, echo=FALSE}
+question_parsons(
+  initial = c(
+    "ggplot(data  = ..., aes(x = ..., y = ..., text = glue(...)))",
+    "labs(...)",
+    "ggplot(data  = ..., aes(x = ..., y = reorder(..., ...), text = glue(...)))",
+    "geom_col(fill = ...)",
+    "ggplotly(...)",
+    "geom_segment(fill = ...)",
+    "arrange(...)",
+    "theme_minimal()",
+    "ggplotly(..., tooltip = ...)"
+  ),
+  pass_if(
+    c(
+      "ggplot(data  = ..., aes(x = ..., y = reorder(..., ...), text = glue(...)))",
+      "geom_col(fill = ...)",
+      "labs(...)",
+      "theme_minimal()",
+      "ggplotly(..., tooltip = ...)"
+    )
+  ),
+  
+  fail_if(
+    ~length(.) < 5,
+    message = "Include six answers"
+  ),
+  
+  fail_if(
+    function(x){"geom_segment(fill = ...)" %in% x},
+    message = "You should not include geom_segment(fill = ...)in your answer"
+  ),
+  
+  fail_if(
+    function(x){"ggplot(data  = ..., aes(x = ..., y = ..., text = glue(...)))" %in% x},
+    message = "You should not include ggplot(data  = ..., aes(x = ..., y = ..., text = glue(...))) in your answer"
+  ),
+  
+  fail_if(
+    function(x){"ggplotly(...)" %in% x},
+    message = "You should not include ggplotly(...) in your answer"
+  )
+)
+```
+
+Setelah berhasil mengurutkan dengan benar setiap fungsi yang akan digunakan dari tahapan aggregasi data sampai visualisasi, mari kita coba isi setiap parameter yang dibutuhkan untuk menghasilkan visualisasi yang sama seperti diatas.
+
+```{r abcdefghij, exercise = TRUE, exercise.eval = TRUE}
+
+
+```
+
+<b>Latihan Visualisasi Interaktif 2:</b>
+
+Untuk lebih mendalami visualisasi interaktif, mari kita coba replikasi satu visualisasi lagi. Pada visualisasi dibawah kita diminta untuk membuat sebuah visualiasi yang menampilkan distribusi harga untuk 5 kategori barang.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+df2 <- ikea_clean %>% 
+  filter(category %in% c("Wardrobes", "Chairs", "Cabinets & cupboards", "Beds", "Bar furniture")) %>% 
+  select(category, other_colors, price_in_rp)
+
+
+plot2<-
+  ggplot(data = df2, aes(x = category, y = price_in_rp)) +
+  geom_boxplot(aes(fill = category)) +
+  scale_y_continuous(labels = dollar_format(prefix = "Rp ")) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set1") +
+  labs(title = "Price Distribution",
+       x = "Category",
+       y = "Price") +
+  theme(legend.position = "none")
+
+ggplotly(plot2)
+```
+
+Untuk mempermudah proses replikasi visualisasi di atas, mari kita coba urutkan terlebih dahulu fungsi-fungsi yang sudah disediakan di bawah ini.
+
+* <b>Aggregasi Data</b>
+
+```{r parsons3, echo=FALSE}
+question_parsons(
+  initial = c(
+    "arrange(...)",
+    "filter(...)",
+    "ikea_clean",
+    "group_by(...)",
+    "select(...)",
+    "summarise(...)"
+  ),
+  pass_if(
+    c(
+      "ikea_clean",
+      "filter(...)",
+      "select(...)"
+    )
+  ),
+  
+  fail_if(
+    ~length(.) < 3,
+    message = "Include six answers"
+  ),
+  
+  fail_if(
+    function(x){"group_by(...)" %in% x},
+    message = "You should not include group_by(...) in your answer"
+  ),
+  
+    fail_if(
+    function(x){"arrange(...)" %in% x},
+    message = "You should not include arrange(...) in your answer"
+  ),
+  
+  fail_if(
+    function(x){"summarise(...)" %in% x},
+    message = "You should not include summarise(...) in your answer"
+  )
+)
+```
+
+* <b>Visualisasi</b> 
+
+```{r parsons4, echo=FALSE}
+question_parsons(
+  initial = c(
+    "ggplot(data  = ..., aes(x = ..., y = ..., text = glue(...)))",
+    "labs(...)",
+    "theme(legend.position = ...)",
+    "ggplot(data  = ..., aes(x = ..., y = ...))",
+    "geom_boxplot(aes(fill = ...))",
+    "ggplotly(...)",
+    "geom_boxplot(fill = ...)",
+    "theme_minimal()",
+    "ggplotly(..., tooltip = ...)"
+  ),
+  pass_if(
+    c(
+      "ggplot(data  = ..., aes(x = ..., y = ...))",
+      "geom_boxplot(aes(fill = ...))",
+      "scale_y_continuous(labels = ...)",
+      "labs(...)",
+      "theme_minimal()",
+      "theme(legend.position = ...)",
+      "ggplotly(...)"
+    )
+  ),
+  
+  fail_if(
+    ~length(.) < 7,
+    message = "Include six answers"
+  ),
+  
+  fail_if(
+    function(x){"ggplot(data  = ..., aes(x = ..., y = ..., text = glue(...))))" %in% x},
+    message = "You should not include ggplot(data  = ..., aes(x = ..., y = ..., text = glue(...))) in your answer"
+  ),
+  
+  fail_if(
+    function(x){"geom_boxplot(fill = ...)" %in% x},
+    message = "You should not include geom_boxplot(fill = ...) in your answer"
+  ),
+  
+  fail_if(
+    function(x){"ggplotly(..., tooltip = ...)" %in% x},
+    message = "You should not include ggplotly(..., tooltip = ...) in your answer"
+  )
+)
+```
+
+Setelah berhasil mengurutkan dengan benar setiap fungsi yang akan digunakan dari tahapan aggregasi data sampai visualisasi, mari kita coba isi setiap parameter yang dibutuhkan untuk menghasilkan visualisasi yang sama seperti diatas.
+
+```{r abcdefghi, exercise = TRUE, exercise.eval = TRUE}
+
+
+```
+
+## Bab 4: Dashboard 
+
+Penyajian visualisasi yang interaktif memerlukan sebuah platform tersendiri. R menyediakan dua buah platform yang dapat dimanfaatkan untuk menyajikan hasil visualisasi interaktif yang sudah kita buat yaitu melalui [RPubs](www.rpubs.com) dengan bentuk flexdashboard dan [ShinyApps](https://www.shinyapps.io/) dengan bentuk dashboard.
+
+### 4.1 Flexdashboard
+
+Flex Dashboard adalah paket R yang “mudah membuat dasbor fleksibel, menarik, dan interaktif”. Pembuatan dan penyesuaian dasbor dilakukan menggunakan R Markdown dengan format output `flexdashboard::flex_dashboard`. 
+
+Buat dokumen R Markdown baru dari dalam RStudio, pilih "From Template" dan kemudian FlexDashboard.
+
+Template yang dihasilkan pada saat membuat file baru terdapat beberapa parameter default - misalnya kode untuk memilih _orientasi_ kolom dan mengatur tata letak layout `fill` seperti berikut:
+
+```
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+```
+
+Jika Anda ingin plot Anda diubah tingginya agar dapat mengisi halaman web secara vertikal, pengaturan `vertical_layout:fill` (default) harus dipertahankan. Jika Anda ingin bagan mempertahankan ukuran aslinya, ini memerlukan _page scrolling_ untuk memperlihtkan semua plot Anda. Itu bisa dilakukan dengan mengatur `vertical_layout` ke tata letak scrolling menggunakan parameter `scroll`.
+
+Di dalam setiap potongan kode dari kode template Rmd yang dibuat untuk Anda, Anda akan menemukan hal yang umum untuk memasukkan:
+- Output grafik R (`plot()`, `ggplot()`) 
+- Visualisasi data JavaScript interaktif berdasarkan htmlwidgets (`plotly`)
+- Data tabular (`table()`)
+- Data ringkasan umum, teks, score card, dll
+
+### 4.2 Shiny 
+
+_Shiny_ adalah packages dari RStudio, yang menyediakan framework aplikasi web untuk membuat aplikasi web interaktif (visualisasi) yang disebut “_Shiny apps_”. Kemudahan bekerja dengan Shiny telah mempopulerkannya di antara pengguna R. Aplikasi web ini menampilkan objek R dengan cantik (seperti plot, tabel, dll.) dan juga dapat di-_deploy_ untuk memungkinkan diakses oleh siapa saja.
+
+Struktur aplikasi _shiny_ dasar:
+
+<center>
+![](www/shiny architecture.png)
+</center>
+
+* `global.R`: Untuk menyiapkan lingkungan aplikasi, misalnya, library, impor data dan persiapan data..
+* `ui.R`: User Interface (UI) untuk menampilkan input dan output.
+* `server.R`: Untuk memproses input dari user dan mengubahnya menjadi output.
+
+Salah satu dari banyak library yang dapat kita gunakan adalah `shinydashboard`. Untuk lebih memahami fungsi apa saja yang dapat kita manfaatkan untuk membangun sebuah dashboard, mari kita coba latihan untuk membuat sebuah dashboard sederhana yang dapat menampilkan visualisasi interaktif yang sudah kita buat sebelumnya, selain itu juga kita akan mencoba untuk menambahkan beberapa fitur lainnya.
+
+Jika dalam proses pembuatan dashboard nantinya ada beberapa fungsi yang terlupa, R sudah menyediakan sebuah <i>cheatsheet</i> yang bisa diakses melalui link berikut ini [RStudio Cheatsheet](https://www.rstudio.com/resources/cheatsheets/).
 
 
 
 
-## Bab 4: Dashboard
 
 
 
-
-
-
+## Bab 5: Refensi Tambahan
 
 
 
