@@ -90,7 +90,7 @@ ikea[ , c("designer","category","price")]
 
 Jika kita menggunakan cara base, kita bisa melakukan subset data dengan menggunakan cara di atas. Sekarang mari kita coba untuk melakukan subset data dengan menggunakan cara dplyr.
 
-```{r abcdefghijklmn, exercise = TRUE, exercise.eval = TRUE}
+```{r lat1, exercise = TRUE, exercise.eval = TRUE}
 # Cara dplyr
 
 ```
@@ -106,7 +106,7 @@ ikea[ikea$category %in% c("Tables & desks", "Bar furniture"),  ]
 
 Dalam melakukan subset data dengan kondisi tertenu kita bisa memanfaatkan cara base di atas. Sekarang mari kita coba untuk melakukan subset dengan kondisi tertentu dengan menggunakan cara dplyr. 
 
-```{r abcdefghijklm, exercise = TRUE, exercise.eval = TRUE}
+```{r lat2, exercise = TRUE, exercise.eval = TRUE}
 # Cara dplyr
 
 ```
@@ -122,7 +122,7 @@ ikea[ikea$category %in% c("Tables & desks", "Bar furniture"), c("designer","cate
 
 Jika dengan menggunakan cara base kita bisa menggabungkan kedua proses subset data sebelumnya kedalam satu proses, sekarang mari kita coba dengan menggunakan cara dplyr.
 
-```{r abcdefghijkl, exercise = TRUE, exercise.eval = TRUE}
+```{r lat3, exercise = TRUE, exercise.eval = TRUE}
 # Cara dplyr
 
 ```
@@ -143,7 +143,7 @@ head(ikea)
 
 Seperti yang kita sudah ketahui kita bisa menggunakan cara base seperti chunk di atas untuk menambahkan sebuah kolom baru, mari sekarang kita coba menambahkan kolom baru yang berisikan informasi harga barang dalam mata uang Indonesia dengan menggunakan cara dplyr.
 
-```{r letter, echo=FALSE}
+```{r lat4, echo=FALSE}
 question("Coba pilih salah satu kode dplyr dibawah ini yang dapat digunakan untuk membuat kolom baru yang berisikan informasi harga barang dalam mata uang Indonesia.", type = "single",
 correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
 random_answer_order = FALSE,
@@ -164,7 +164,7 @@ glimpse(ikea)
 
 Selain menggunakan fungsi lapply untuk mengubah tipe data pada beberapa kolom secara bersamaan, kita juga bisa memanfaatkan salah satu fungsi dari `library(dplyr)`. Sekarang mari kita coba untuk mengubah beberapa kolom secara bersamaan tanpa menggunakan cara base.
 
-```{r letter2, echo=FALSE}
+```{r lat5, echo=FALSE}
 question("Coba pilih salah satu kode dplyr dibawah ini yang dapat digunakan untuk mengubah beberapa kolom secara bersamaan.", type = "single",
 correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
 random_answer_order = FALSE,
@@ -190,14 +190,14 @@ aggregate(x = ikea$price,
 
 Jika dengan cara base kita bisa menggunakan fungsi `aggregate()` untuk melakukan aggregasi, sekarang mari kita coba untuk melakukan aggregasi data dengan menggunakan cara dplyr.
 
-```{r abcdefghijk, exercise = TRUE, exercise.eval = TRUE}
+```{r lat6, exercise = TRUE, exercise.eval = TRUE}
 # Cara dplyr
 
 ```
 
 Setelah kita melakukan aggregasi, hasil aggregasinya masih belum terurut secara rapi dari nilai yang paling tertinggi ke nilai terendah ataupun sebaliknya. 
 
-```{r letter3, echo=FALSE}
+```{r lat7, echo=FALSE}
 question("Coba pilih salah satu fungsi dplyr dibawah ini yang dapat membantu kita untuk mengurutkan hasil aggregasi data yang sudah dilakukan.", type = "single",
 correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
 random_answer_order = FALSE,
@@ -263,7 +263,7 @@ Untuk mempermudah proses replikasi visualisasi di atas, mari kita coba urutkan t
 
 * <b>Aggregasi Data</b>
 
-```{r parsons, echo=FALSE}
+```{r lat8, echo=FALSE}
 question_parsons(
   initial = c(
     "labs(...)",
@@ -317,7 +317,7 @@ question_parsons(
 
 * <b>Visualisasi</b> 
 
-```{r parsons2, echo=FALSE}
+```{r lat9, echo=FALSE}
 question_parsons(
   initial = c(
     "ggplot(data  = ..., aes(x = ..., y = ..., text = glue(...)))",
@@ -364,7 +364,7 @@ question_parsons(
 
 Setelah berhasil mengurutkan dengan benar setiap fungsi yang akan digunakan dari tahapan aggregasi data sampai visualisasi, mari kita coba isi setiap parameter yang dibutuhkan untuk menghasilkan visualisasi yang sama seperti diatas.
 
-```{r abcdefghij, exercise = TRUE, exercise.eval = TRUE}
+```{r lat10, exercise = TRUE, exercise.eval = TRUE}
 
 
 ```
@@ -397,7 +397,7 @@ Untuk mempermudah proses replikasi visualisasi di atas, mari kita coba urutkan t
 
 * <b>Aggregasi Data</b>
 
-```{r parsons3, echo=FALSE}
+```{r lat11, echo=FALSE}
 question_parsons(
   initial = c(
     "arrange(...)",
@@ -439,7 +439,7 @@ question_parsons(
 
 * <b>Visualisasi</b> 
 
-```{r parsons4, echo=FALSE}
+```{r lat12, echo=FALSE}
 question_parsons(
   initial = c(
     "ggplot(data  = ..., aes(x = ..., y = ..., text = glue(...)))",
@@ -488,7 +488,7 @@ question_parsons(
 
 Setelah berhasil mengurutkan dengan benar setiap fungsi yang akan digunakan dari tahapan aggregasi data sampai visualisasi, mari kita coba isi setiap parameter yang dibutuhkan untuk menghasilkan visualisasi yang sama seperti diatas.
 
-```{r abcdefghi, exercise = TRUE, exercise.eval = TRUE}
+```{r lat13, exercise = TRUE, exercise.eval = TRUE}
 
 
 ```
@@ -539,15 +539,83 @@ Salah satu dari banyak library yang dapat kita gunakan adalah `shinydashboard`. 
 
 Jika dalam proses pembuatan dashboard nantinya ada beberapa fungsi yang terlupa, R sudah menyediakan sebuah <i>cheatsheet</i> yang bisa diakses melalui link berikut ini [RStudio Cheatsheet](https://www.rstudio.com/resources/cheatsheets/).
 
+<b>Latihan Shiny Dashboard 1:</b>
 
+<center>
+![](www/blank_dashboard.png)
+</center>
+<br>
 
+```{r lat14, echo=FALSE}
+question("Untuk membuat shiny dashboard dengan tampilan seperti foto di atas, pada bagian ui.R kita harus menambahkan beberapa fungsi, fungsi apa sajakah yang harus ditambahkan?", type = "multiple",
+correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
+random_answer_order = FALSE,
+answer("dashboardHeader()", correct = TRUE),
+answer("dashboardBody()", correct = TRUE),
+answer("dashboardPage()", correct = TRUE),
+answer("dashboardSidebar()", correct = TRUE))
+```
 
+<b>Latihan Shiny Dashboard 2:</b>
 
+```{r lat15, echo=FALSE}
+question("Jika kita ingin menambahkan beberapa menu pada bagian Sidebar, fungsi apakah yang akan kita harus gunakan?", type = "single",
+correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
+random_answer_order = FALSE,
+answer("tabName()"),
+answer("tabItem()"),
+answer("menuItem()", correct = TRUE))
+```
 
+<b>Latihan Shiny Dashboard 3:</b>
+
+<center>
+![](www/gif1.gif)
+</center>
+
+<br>
+
+```{r lat16, echo=FALSE}
+question("Pilihlah dua fungsi di bawah ini yang dapat digunakan untuk membuat sebuah input yang dapat memilih kategori apa yang ingin di tampilkan dalam visualisasi kita dan dapat digunakan untuk membuat sebuah box yang berisikan total barang dari setiap kategori barangnya?", type = "multiple",
+correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
+random_answer_order = FALSE,
+answer("sliderInput()"),
+answer("valueBox()", correct = TRUE),
+answer("selectInput()", correct = TRUE),
+answer("radioButtons()"))
+```
+
+<b>Latihan Shiny Dashboard 4:</b>
+
+<center>
+![](www/gif2.gif)
+</center>
+
+<br>
+
+```{r lat17, echo=FALSE}
+question("Untuk menampilkan sebuah sliderInput() seperti gif di atas, parameter apa sajakah yang harus kita gunakan?", type = "multiple",
+correct = "Selamat jawabannya sudah benar!", incorrect = "Ups, Salah!", allow_retry = TRUE,
+random_answer_order = FALSE,
+answer("inputId =", correct = TRUE),
+answer("min =", correct = TRUE),
+answer("ticks = ", correct = TRUE),
+answer("animate = "),
+answer("value = ", correct = TRUE), 
+answer("locale = "),
+answer("label = ", correct = TRUE),
+answer("dragRange = "),
+answer("max =", correct = TRUE))
+```
 
 ## Bab 5: Refensi Tambahan
 
-
+1. [Shinydashboard](https://rstudio.github.io/shinydashboard/get_started.html)
+2. [Shiny-Tutorial](https://shiny.rstudio.com/tutorial/)
+3. [Plotly | Graphing Libraries](https://plotly.com/r/)
+4. [ggplot2 extensions](https://exts.ggplot2.tidyverse.org/gallery/)
+5. [Leaflet for R](http://rstudio.github.io/leaflet/)
+6. [Advancing Your Shiny Application](https://algotech.netlify.app/blog/advancing-your-shinyapp/)
 
 
 
