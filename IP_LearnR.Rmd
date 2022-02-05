@@ -323,46 +323,42 @@ question_parsons(
 
 * <b>Visualisasi</b> 
 
-```{r lat9, echo=FALSE}
+```{r parson_spec2, echo=FALSE}
 question_parsons(
   initial = c(
-    "labs()",
-    "ggplot(data  = , aes(x = , y = reorder( , ), text = glue( )))",
-    "geom_col(fill = )",
-    "ggplotly()",
-    "geom_segment(fill = )",
-    "arrange()",
-    "theme_minimal()",
-    "ggplotly( , tooltip = )"
+    "ggplot(data = ..., mapping = aes(x = ..., y = reorder(...,...)))",
+    "geom_segment(fill = ...)",
+    "labs(...)",
+    "ggplot(data = ..., mapping = aes(x = ..., y = reorder(...,...), text = glue()))",
+    "ggplotly(..., tooltip = ...)",
+    "geom_col(fill = ...)",
+    "theme_minimal",
+    "ggplotly(...)"
   ),
   pass_if(
     c(
-      "ggplot(data  = , aes(x = , y = reorder( , ), text = glue( )))",
-      "geom_col(fill = )",
-      "labs()",
-      "theme_minimal()",
-      "ggplotly( , tooltip = )"
+      "ggplot(data = ..., mapping = aes(x = ..., y = reorder(...,...), text = glue()))",
+      "geom_col(fill = ...)",
+      "labs(...)",
+      "theme_minimal",
+      "ggplotly(..., tooltip = ...)"
     )
   ),
-  
   fail_if(
     ~length(.) < 5,
     message = "Include five answers"
   ),
-  
   fail_if(
     function(x){"geom_segment(fill = ...)" %in% x},
-    message = "You should not include geom_segment(fill = ...)in your answer"
+    message = "You should not include geom_segment(fill = ...) in your answer"
   ),
-  
-    fail_if(
-    function(x){"arrange(...)" %in% x},
-    message = "You should not include arrange(...) in your answer"
-  ),
-  
   fail_if(
     function(x){"ggplotly(...)" %in% x},
     message = "You should not include ggplotly(...) in your answer"
+  ),
+  fail_if(
+    function(x){"ggplot(data = ..., mapping = aes(x = ..., y = reorder(...,...)))" %in% x},
+    message = "You should not include ggplot(data = ..., mapping = aes(x = ..., y = reorder(...,...))) in your answer" 
   )
 )
 ```
@@ -444,39 +440,44 @@ question_parsons(
 
 * <b>Visualisasi</b> 
 
-```{r lat12, echo=FALSE}
+```{r parson_spec3, echo=FALSE}
 question_parsons(
   initial = c(
-    "ggplot(data  = ..., aes(x = ..., y = ...))",
+    "ggplotly(...)",
+    "ggplot(data = ..., mapping = aes(x = ..., y = ..., text = glue(...)))",
+    "ggplot(data = ..., mapping = aes(x = ..., y = ...))",
     "labs(...)",
     "theme(legend.position = ...)",
-    "geom_boxplot(aes(fill = ...))",
-    "ggplotly(...)",
-    "geom_boxplot(fill = ...)",
+    "geom_boxplot(mapping = aes(fill = ...))",
     "theme_minimal()",
-    "ggplotly(..., tooltip = ...)"
+    "geom_boxplot(fill = ...)",
+    "ggplotly(..., tolltip = ...)"
   ),
   pass_if(
     c(
-      "ggplot(data  = ..., aes(x = ..., y = ...))",
-      "geom_boxplot(aes(fill = ...))",
-      "scale_y_continuous(labels = ...)",
+      "ggplot(data = ..., mapping = aes(x = ..., y = ...))",
+      "geom_boxplot(mapping = aes(fill = ...))",
       "labs(...)",
       "theme_minimal()",
       "theme(legend.position = ...)",
       "ggplotly(...)"
     )
   ),
-  
   fail_if(
-    ~length(.) < 7,
-    message = "Include seven answers"
+    ~length(.) < 6,
+    message = "Include six answers"
   ),
-
-  
   fail_if(
-    function(x){"ggplotly(..., tooltip = ...)" %in% x},
-    message = "You should not include ggplotly(..., tooltip = ...) in your answer"
+    function(x){"geom_boxplot(fill = ...)" %in% x},
+    message = "You should note include geom_boxplot(fill = ...) in your answer"
+  ),
+  fail_if(
+    function(x){"ggplot(data = ..., mapping = aes(x = ..., y = ..., text = glue(...)))" %in% x},
+    message = "You should note include ggplot(data = ..., mapping = aes(x = ..., y = ..., text = glue(...))) in your answer"
+  ),
+  fail_if(
+    function(x){"ggplotly(..., tolltip = ...)" %in% x},
+    message = "You should note include ggplotly(..., tolltip = ...) in your answer"
   )
 )
 ```
