@@ -1,7 +1,7 @@
 ---
 title: "Interactive Plotting"
 author : "Team Algoritma"
-date : "1/24/2022"
+date :  "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
   learnr::tutorial:
   fig.show : 'asis'
